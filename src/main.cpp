@@ -142,7 +142,7 @@ RipeMD160Hash ripemd160( const char *dataIn, u64 size )
 	data.push_back( ( bits >> 32 ) & 0xFF );
 	data.push_back( ( bits >> 40 ) & 0xFF );
 	data.push_back( ( bits >> 48 ) & 0xFF );
-	data.push_back( ( bits >> 54 ) & 0xFF );
+	data.push_back( ( bits >> 56 ) & 0xFF );
 
 	u32 a0 = 0x67452301;
 	u32 b0 = 0xefcdab89;
@@ -162,7 +162,6 @@ RipeMD160Hash ripemd160( const char *dataIn, u64 size )
 	for ( u64 blockIdx = 0, blockCount = ( data.size() / 64 ); blockIdx < blockCount; ++blockIdx )
 	{
 		// -- message schedule ---
-		u32 *word = words;
 		for ( i32 w = 0; w < 16; ++w )
 		{
 			u32 byte0 = *dataByte++;
@@ -171,9 +170,9 @@ RipeMD160Hash ripemd160( const char *dataIn, u64 size )
 			u32 byte3 = *dataByte++;
 
 			#if defined( LITTLE_ENDIAN )
-				*word++ = ( byte3 << 24 ) | ( byte2 << 16 ) | ( byte1 << 8 ) | byte0;
+				words[ w ] = ( byte3 << 24 ) | ( byte2 << 16 ) | ( byte1 << 8 ) | byte0;
 			#else
-				*word++ = ( byte0 << 24 ) | ( byte1 << 16 ) | ( byte2 << 8 ) | byte3;
+				words[ w ] = ( byte0 << 24 ) | ( byte1 << 16 ) | ( byte2 << 8 ) | byte3;
 			#endif
 		}
 
